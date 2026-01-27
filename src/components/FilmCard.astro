@@ -1,0 +1,49 @@
+---
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  id: string;
+  titre: string;
+  affiche?: ImageMetadata;
+  dateSortie: Date;
+  genre: string[];
+}
+
+const { id, titre, affiche, dateSortie, genre } = Astro.props;
+const annee = dateSortie.getFullYear();
+---
+
+<a href={`/films/${id}`} class="block group animate-fade-in-up">
+  <div class="relative aspect-[2/3] rounded-xl overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-800">
+    {affiche ? (
+      <img 
+        src={affiche.src} 
+        alt={titre} 
+        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+      />
+    ) : (
+      <div class="flex items-center justify-center w-full h-full text-zinc-600">
+        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+        </svg>
+      </div>
+    )}
+    
+    <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <span class="w-14 h-14 bg-white/95 rounded-full flex items-center justify-center text-black scale-75 group-hover:scale-100 transition-transform duration-300">
+        <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </span>
+    </div>
+  </div>
+  
+  <div class="mt-3">
+    <h3 class="font-semibold text-white text-base leading-tight line-clamp-2">{titre}</h3>
+    <div class="flex items-center gap-2 mt-1.5 text-sm text-zinc-400">
+      <span>{annee}</span>
+      <span class="text-zinc-600">•</span>
+      <span>{genre[0]}</span>
+    </div>
+  </div>
+</a>

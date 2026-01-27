@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import PersonneCard from "../../components/PersonneCard.astro";
+
+const personnes = await getCollection("personnes");
+---
+
+<Layout titre="Toutes les personnes">
+  <div class="mb-8">
+    <h1 class="text-3xl md:text-4xl font-bold mb-2">Toutes les personnes</h1>
+    <p class="text-zinc-400">Découvrez {personnes.length} acteurs, réalisateurs et scénaristes</p>
+  </div>
+  
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+    {personnes.map((personne) => (
+      <PersonneCard
+        id={personne.id}
+        nom={personne.data.nom}
+        image={personne.data.image}
+        professions={personne.data.professions}
+      />
+    ))}
+  </div>
+</Layout>

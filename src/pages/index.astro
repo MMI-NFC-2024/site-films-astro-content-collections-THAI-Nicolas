@@ -1,10 +1,87 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import FilmCard from "../components/FilmCard.astro";
+import PersonneCard from "../components/PersonneCard.astro";
 
+const films = await getCollection("films");
+const personnes = await getCollection("personnes");
+
+const filmsRecents = films.slice(0, 6);
+const personnesVedettes = personnes.slice(0, 6);
 ---
 
 <Layout titre="Accueil">
-	<h1 class="text-green-700 text-6xl font-bold">Test de tailwindcss</h1>
-	<p>testfesfes</p>
+  <!-- Hero Section -->
+  <div class="relative -mx-6 -mt-6 mb-16 bg-gradient-to-b from-zinc-900 to-black px-6 py-24 md:py-32 lg:py-40">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 tracking-tight">
+        Découvrez le cinéma
+      </h1>
+      <p class="text-lg md:text-xl text-zinc-400 mb-8 md:mb-10">
+        Des milliers de films et d'acteurs à explorer
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/films" class="inline-flex items-center justify-center gap-2 bg-white text-black px-7 py-3.5 rounded-lg font-semibold hover:bg-zinc-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-white/20">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+          </svg>
+          Explorer les films
+        </a>
+        <a href="/personnes" class="inline-flex items-center justify-center gap-2 bg-transparent text-white px-7 py-3.5 rounded-lg font-semibold border-2 border-zinc-700 hover:bg-zinc-900 hover:border-zinc-600 transition-all duration-300 hover:-translate-y-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          Découvrir les acteurs
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Films récents -->
+  <section class="mb-16">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl md:text-3xl font-bold">Films récents</h2>
+      <a href="/films" class="flex items-center gap-1 text-zinc-400 hover:text-white transition-colors duration-300 font-medium group">
+        Tout voir
+        <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+      {filmsRecents.map((film) => (
+        <FilmCard
+          id={film.id}
+          titre={film.data.titre}
+          affiche={film.data.affiche}
+          dateSortie={film.data.dateSortie}
+          genre={film.data.genre}
+        />
+      ))}
+    </div>
+  </section>
+
+  <!-- Acteurs populaires -->
+  <section class="mb-16">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl md:text-3xl font-bold">Acteurs populaires</h2>
+      <a href="/personnes" class="flex items-center gap-1 text-zinc-400 hover:text-white transition-colors duration-300 font-medium group">
+        Tout voir
+        <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+      {personnesVedettes.map((personne) => (
+        <PersonneCard
+          id={personne.id}
+          nom={personne.data.nom}
+          image={personne.data.image}
+          professions={personne.data.professions}
+        />
+      ))}
+    </div>
+  </section>
 </Layout>

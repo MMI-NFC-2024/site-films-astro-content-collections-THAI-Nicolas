@@ -1,0 +1,41 @@
+---
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  id: string;
+  nom: string;
+  image?: ImageMetadata;
+  professions: string[];
+}
+
+const { id, nom, image, professions } = Astro.props;
+---
+
+<a href={`/personnes/${id}`} class="block group animate-fade-in-up">
+  <div class="relative aspect-2/3 rounded-xl overflow-hidden bg-linear-to-br from-zinc-900 to-zinc-800">
+    {image ? (
+      <img 
+        src={image.src} 
+        alt={nom} 
+        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+      />
+    ) : (
+      <div class="flex items-center justify-center w-full h-full text-zinc-600">
+        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      </div>
+    )}
+    
+    <div class="absolute inset-0 bg-black/75 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <span class="text-white text-sm font-medium px-4 py-2 border-2 border-white rounded-full hover:bg-white hover:text-black transition-all duration-300">
+        Voir le profil
+      </span>
+    </div>
+  </div>
+  
+  <div class="mt-3">
+    <h3 class="font-semibold text-white text-base">{nom}</h3>
+    <p class="text-sm text-zinc-400 mt-1">{professions[0]}</p>
+  </div>
+</a>

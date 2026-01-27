@@ -1,0 +1,77 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { render } from "astro:content";
+import { formatDate, joinWithAnd, getRegionName } from "../../helper.ts";
+import { Image } from "astro:assets";
+
+export async function getStaticPaths() {
+    const films = await getCollection("films");
+    return films.map(film => ({
+        params: {id: film.id},
+        props: {film}
+    }))
+}
+
+const { film } = Astro.props;
+const  { Content } = await render(film);
+
+
+---
+
+<Layout titre={`${film.data.titre}`}>
+    <div class="max-w-5xl mx-auto">
+        <!-- En-tête du film -->
+        <div class="mb-8">
+            <a href="/films" class="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors duration-300 mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Retour aux films
+            </a>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">{film.data.titre}</h1>
+            <div class="flex flex-wrap items-center gap-4 text-zinc-400">
+                <span class="flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {formatDate(film.data.dateSortie)}
+                </span>
+                <span class="text-zinc-600">•</span>
+                <span class="flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    {joinWithAnd(film.data.genre)}
+                </span>
+                {film.data.pays && (
+                    <>
+                        <span class="text-zinc-600">•</span>
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                            </svg>
+                            {getRegionName(film.data.pays)}
+                        </span>
+                    </>
+                )}
+            </div>
+        </div>
+
+        <!-- Affiche du film -->
+        {film.data.affiche && (
+            <div class="mb-8">
+                <Image 
+                    src={film.data.affiche} 
+                    alt={`Affiche du film ${film.data.titre}`}
+                    class="w-full max-w-md rounded-xl shadow-2xl"
+                />
+            </div>
+        )}
+
+        <!-- Contenu Markdown -->
+        <div class="prose prose-invert prose-zinc max-w-none">
+            <Content />
+        </div>
+    </div>
+</Layout>
