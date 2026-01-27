@@ -4,6 +4,9 @@ import Layout from "../../layouts/Layout.astro";
 import { render } from "astro:content";
 import { formatDate, joinWithAnd, getRegionName } from "../../helper.ts";
 import { Image } from "astro:assets";
+import LinkPersonnes from "../../components/LinkPersonnes.astro";
+import { getEntry } from "astro:content";
+import { getEntries } from "astro:content";
 
 export async function getStaticPaths() {
     const films = await getCollection("films");
@@ -15,7 +18,10 @@ export async function getStaticPaths() {
 
 const { film } = Astro.props;
 const  { Content } = await render(film);
-
+const rolesEntries = film.data.roles ? await Promise.all(film.data.roles.map( async ({acteur,nom_role})=>({
+    nom_role,
+    acteur: await getEntry(acteur)
+}))) : []
 
 ---
 
@@ -54,6 +60,56 @@ const  { Content } = await render(film);
                             {getRegionName(film.data.pays)}
                         </span>
                     </>
+                )}
+            </div>
+            <div>
+                { film.data.realisateur && (
+                    <p>Réalisateur</p>
+                    <p>
+                        {<LinkPersonnes personne={await getEntry(film.data.realisateur)} />}
+                    </p>
+                )
+
+                }
+            </div>
+            <div>
+                <p>Producteurs</p>
+                {film.data.producteurs && (
+                    <p>
+                        {(
+                            await getEntries(film.data.producteurs)
+                        ).map((prod) => (
+                            <LinkPersonnes personne={prod} />
+                        ))
+                        .reduce(
+                            (prev, curr, currentIndex) => [
+                                prev,
+                                currentIndex < film.data.producteurs!.length - 1 ? ", " : " et ",
+                                curr,
+                            ]
+                        )
+                        }
+                    </p>
+                )
+                }
+            </div>
+            <div>
+                <p>Les acteurs</p>
+                { 
+                    film.data.acteurs && (
+                        (await getEntries(film.data.acteurs))
+                            .map((personne) => <LinkPersonnes personne={personne} />)
+                            .reduce((p, c) => [p, ", ", c])
+                    )
+                }
+                {film.data.roles && (
+                    <ul>
+                        {rolesEntries.map(({acteur, nom_role}) => (
+                            <li>
+                                <LinkPersonnes personne={acteur} /> : {nom_role}
+                            </li>
+                        ))}
+                    </ul>
                 )}
             </div>
         </div>

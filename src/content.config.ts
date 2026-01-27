@@ -1,5 +1,6 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection, reference, z } from "astro:content";
 import { glob } from "astro/loaders";
+import { optional } from "astro:schema";
 
 const personnes = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/data/personnes" }),
@@ -29,6 +30,17 @@ const films = defineCollection({
         z.enum(["Action", "Comédie", "Drame", "Horreur", "Science-Fiction"]),
       ),
       pays: z.string().min(2).optional(),
+      realisateur: reference("personnes").optional(),
+      producteurs: z.array(reference("personnes")).optional(),
+      acteurs: z.array(reference("personnes")).optional(),
+      roles: z
+        .array(
+          z.object({
+            acteur: reference("personnes"),
+            nom_role: z.string(),
+          }),
+        )
+        .optional(),
     }),
 });
 
