@@ -13,37 +13,34 @@ const { id, titre, affiche, dateSortie, genre } = Astro.props;
 const annee = dateSortie.getFullYear();
 ---
 
-<a href={`/films/${id}`} class="block group animate-fade-in-up">
-  <div class="relative aspect-[2/3] rounded-xl overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-800">
+<div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group">
+  <figure class="relative aspect-2/3 overflow-hidden">
     {affiche ? (
       <img 
         src={affiche.src} 
         alt={titre} 
-        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
       />
     ) : (
-      <div class="flex items-center justify-center w-full h-full text-zinc-600">
-        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex items-center justify-center w-full h-full bg-base-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
         </svg>
       </div>
     )}
-    
-    <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-      <span class="w-14 h-14 bg-white/95 rounded-full flex items-center justify-center text-black scale-75 group-hover:scale-100 transition-transform duration-300">
-        <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M8 5v14l11-7z"/>
-        </svg>
-      </span>
-    </div>
-  </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+  </figure>
   
-  <div class="mt-3">
-    <h3 class="font-semibold text-white text-base leading-tight line-clamp-2">{titre}</h3>
-    <div class="flex items-center gap-2 mt-1.5 text-sm text-zinc-400">
-      <span>{annee}</span>
-      <span class="text-zinc-600">•</span>
-      <span>{genre[0]}</span>
+  <div class="card-body p-4">
+    <h2 class="card-title text-base line-clamp-2">{titre}</h2>
+    <div class="flex items-center gap-2 text-sm opacity-70">
+      <div class="badge badge-ghost badge-sm">{annee}</div>
+      <div class="badge badge-primary badge-sm">{genre[0]}</div>
+    </div>
+    <div class="card-actions justify-end mt-2">
+      <a href={`/films/${id}`} class="btn btn-primary btn-sm">
+        Voir plus
+      </a>
     </div>
   </div>
-</a>
+</div>

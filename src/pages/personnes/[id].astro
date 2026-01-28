@@ -18,68 +18,114 @@ const { Content } = await render(personne);
 ---
 
 <Layout titre={personne.data.nom}>
-    <div class="max-w-5xl mx-auto">
-        <!-- En-tête de la personne -->
-        <div class="mb-8">
-            <a href="/personnes" class="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors duration-300 mb-4">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                Retour aux personnes
-            </a>
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">{personne.data.nom}</h1>
-            <div class="flex flex-wrap items-center gap-4 text-zinc-400">
-                <span class="flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    {joinWithAnd(personne.data.professions)}
-                </span>
-                <span class="text-zinc-600">•</span>
-                <span class="flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Né le {formatDate(personne.data.dateNaissance)}
-                </span>
-                <span class="text-zinc-600">•</span>
-                <span>{calculateAge(personne.data.dateNaissance)} ans</span>
-                {personne.data.lieu_naissance && (
-                    <>
-                        <span class="text-zinc-600">•</span>
-                        <span class="flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-                            </svg>
-                            {getRegionName(personne.data.lieu_naissance)}
-                        </span>
-                    </>
-                )}
-            </div>
-            {personne.data.date_mort && (
-                <div class="mt-4 p-4 bg-zinc-900 rounded-lg border border-zinc-800">
-                    <p class="text-zinc-300">
-                        <span class="font-semibold">Décédé</span> le {formatDate(personne.data.date_mort)}, 
-                        il y a {calculateAge(personne.data.date_mort)} ans
-                    </p>
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs text-sm mb-6">
+        <ul>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/personnes">Acteurs & Réalisateurs</a></li>
+            <li>{personne.data.nom}</li>
+        </ul>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Colonne gauche: Photo -->
+        <div class="lg:col-span-1">
+            {personne.data.image && (
+                <div class="card bg-base-100 shadow-xl">
+                    <figure>
+                        <Image 
+                            src={personne.data.image} 
+                            alt={personne.data.nom}
+                            class="w-full rounded-xl"
+                        />
+                    </figure>
                 </div>
             )}
-        </div>
-
-        <!-- Photo de la personne -->
-        {personne.data.image && (
-            <div class="mb-8">
-                <Image 
-                    src={personne.data.image} 
-                    alt={personne.data.nom}
-                    class="w-full max-w-md rounded-xl shadow-2xl"
-                />
+            
+            <!-- Informations rapides -->
+            <div class="card bg-base-200 shadow-xl mt-4">
+                <div class="card-body">
+                    <h3 class="card-title text-lg">Informations</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <div>
+                                <div class="text-xs opacity-60">Profession{personne.data.professions.length > 1 ? 's' : ''}</div>
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    {personne.data.professions.map((prof: string) => (
+                                        <div class="badge badge-secondary badge-sm">{prof}</div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider my-0"></div>
+                        <div class="flex items-center gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <div>
+                                <div class="text-xs opacity-60">Date de naissance</div>
+                                <div class="font-semibold">{formatDate(personne.data.dateNaissance)}</div>
+                                <div class="text-xs opacity-60 mt-1">{calculateAge(personne.data.dateNaissance)} ans</div>
+                            </div>
+                        </div>
+                        {personne.data.lieu_naissance && (
+                            <>
+                                <div class="divider my-0"></div>
+                                <div class="flex items-center gap-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <div>
+                                        <div class="text-xs opacity-60">Lieu de naissance</div>
+                                        <div class="font-semibold">{getRegionName(personne.data.lieu_naissance)}</div>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                        {personne.data.date_mort && (
+                            <>
+                                <div class="divider my-0"></div>
+                                <div class="alert alert-warning">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                    <div>
+                                        <div class="text-sm">Décédé le {formatDate(personne.data.date_mort)}</div>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
             </div>
-        )}
-
-        <!-- Contenu Markdown -->
-        <div class="prose prose-invert prose-zinc max-w-none">
-            <Content />
         </div>
+
+        <!-- Colonne droite: Biographie -->
+        <div class="lg:col-span-2">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">{personne.data.nom}</h1>
+            
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title text-xl mb-4">Biographie</h3>
+                    <div class="prose max-w-none">
+                        <Content />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton retour -->
+    <div class="mt-8">
+        <a href="/personnes" class="btn btn-ghost gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Retour aux personnes
+        </a>
     </div>
 </Layout>

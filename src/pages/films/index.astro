@@ -7,12 +7,22 @@ const films = await getCollection("films");
 ---
 
 <Layout titre="Tous les films">
+  <!-- Breadcrumbs -->
+  <div class="breadcrumbs text-sm mb-6">
+    <ul>
+      <li><a href="/">Accueil</a></li>
+      <li>Films</li>
+    </ul>
+  </div>
+
+  <!-- En-tête -->
   <div class="mb-8">
-    <h1 class="text-3xl md:text-4xl font-bold mb-2">Tous les films</h1>
-    <p class="text-zinc-400">Découvrez notre collection de {films.length} films</p>
+    <h1 class="text-4xl font-bold mb-3">Tous les films</h1>
+    <p class="text-lg opacity-70">Découvrez notre collection de {films.length} films</p>
   </div>
   
-  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+  <!-- Grille de films -->
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
     {films.map((film) => (
       <FilmCard
         id={film.id}
