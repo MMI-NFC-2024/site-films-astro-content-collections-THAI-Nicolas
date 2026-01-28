@@ -23,6 +23,8 @@ const rolesEntries = film.data.roles ? await Promise.all(film.data.roles.map( as
     acteur: await getEntry(acteur)
 }))) : []
 
+
+
 ---
 
 <Layout titre={`${film.data.titre}`}>

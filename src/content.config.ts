@@ -27,7 +27,16 @@ const films = defineCollection({
       dateSortie: z.date(),
       affiche: image().optional(),
       genre: z.array(
-        z.enum(["Action", "Comédie", "Drame", "Horreur", "Science-Fiction"]),
+        z.enum([
+          "Action",
+          "Comédie musicale",
+          "Drame",
+          "Horreur",
+          "Science-fiction",
+          "Historique",
+          "Thriller",
+          "Romance",
+        ]),
       ),
       pays: z.string().min(2).optional(),
       realisateur: reference("personnes").optional(),

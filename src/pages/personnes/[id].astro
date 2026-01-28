@@ -4,6 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import { render } from "astro:content";
 import { formatDate, calculateAge, joinWithAnd, getRegionName } from "../../helper.ts";
 import { Image } from "astro:assets";
+import ListeFilms from "../../components/ListeFilms.astro";
 
 export async function getStaticPaths() {
     const personnes = await getCollection("personnes");
@@ -15,6 +16,10 @@ export async function getStaticPaths() {
 
 const { personne } = Astro.props;
 const { Content } = await render(personne);
+
+const filmRealisateur = await getCollection("films", function (film) {
+    return film.data.realisateur?.id===personne.id;
+});
 ---
 
 <Layout titre={personne.data.nom}>
@@ -54,7 +59,7 @@ const { Content } = await render(personne);
                             <div>
                                 <div class="text-xs opacity-60">Profession{personne.data.professions.length > 1 ? 's' : ''}</div>
                                 <div class="flex flex-wrap gap-1 mt-1">
-                                    {personne.data.professions.map((prof: string) => (
+                                    {personne.data.professions.map((prof) => (
                                         <div class="badge badge-secondary badge-sm">{prof}</div>
                                     ))}
                                 </div>
@@ -116,6 +121,10 @@ const { Content } = await render(personne);
                     </div>
                 </div>
             </div>
+        </div>
+        <div>
+            <h2>Films réalisés</h2>
+            <ListeFilms films={filmRealisateur} />
         </div>
     </div>
 
