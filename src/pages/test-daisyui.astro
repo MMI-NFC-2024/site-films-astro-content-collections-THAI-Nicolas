@@ -1,0 +1,33 @@
+---
+import Layout from "../layouts/Layout.astro"
+import ThemeSelector from "../components/ThemeSelector.astro"
+---
+
+<Layout titre="Test DaisyUI">
+    <ThemeSelector />
+    <div class="p-8 space-y-6 bg-base">
+  <h1 class="text-2xl font-bold">Mon Interface</h1>
+
+  <div class="flex flex-wrap gap-4">
+    <button class="btn btn-primary btn-lg">Large Primary</button>
+    <button class="btn btn-secondary">Normal Secondary</button>
+    <button class="btn btn-accent btn-sm">Small Accent</button>
+    <button class="btn btn-ghost btn-xs">Tiny Ghost</button>
+  </div>
+
+  <div class="card bg-base-200 w-96 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-primary">Titre en Primary</h2>
+      <p class="text-base-content">
+        Le texte ici utilise 'base-content', donc il sera noir en light et blanc/gris en dark/dracula.
+      </p>
+      <div class="card-actions justify-end">
+        <button class="btn btn-primary">Action</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="badge badge-success">En ligne</div>
+  <div class="badge badge-error">Erreur</div>
+</div>
+</Layout>
