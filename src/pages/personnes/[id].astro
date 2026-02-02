@@ -5,6 +5,7 @@ import { render } from "astro:content";
 import { formatDate, calculateAge, joinWithAnd, getRegionName } from "../../helper.ts";
 import { Image } from "astro:assets";
 import ListeFilms from "../../components/ListeFilms.astro";
+import LinkFilms from "../../components/LinkFilms.astro";
 
 export async function getStaticPaths() {
     const personnes = await getCollection("personnes");
@@ -20,6 +21,20 @@ const { Content } = await render(personne);
 const filmRealisateur = await getCollection("films", function (film) {
     return film.data.realisateur?.id===personne.id;
 });
+
+const filmsProducteurs = await getCollection("films", function (film) {
+    return film.data.producteurs?.some(prod => prod.id===personne.id);
+})
+
+
+const filmActedIn = await getCollection("films", (film) => 
+    film.data.roles?.some(role => role.acteur.id === personne.id)
+) 
+
+const filmActedIn2 = (await getCollection("films")).flatMap(film =>
+    film.data.roles?.filter(role => role.acteur.id === personne.id)
+        .map(role => ({ nom_role: role.nom_role, film: film })) || []
+);
 ---
 
 <Layout titre={personne.data.nom}>
@@ -122,12 +137,40 @@ const filmRealisateur = await getCollection("films", function (film) {
                 </div>
             </div>
         </div>
+    </div>
+
+     <div>
         <div>
             <h2>Films réalisés</h2>
-            <ListeFilms films={filmRealisateur} />
+            <div class="flex">
+                <ListeFilms films={filmRealisateur} />
+            </div>
+        </div>
+        <div>
+            <h2>Films Produits</h2>
+            <div class="flex" >
+                <ListeFilms films={filmsProducteurs}/>
+            </div>
         </div>
     </div>
 
+    <div>
+        <div>
+            <h2>Roles joués</h2>
+            <div class="flex" >
+                {
+                    filmActedIn.map((film) => (
+                        <>
+                            A joué le rôle de {film.data.roles
+                            ?.filter(role => role.acteur.id === personne.id)
+                            .map((role) => role.nom_role)
+                            } dans {film.data.titre}
+                        </>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
     <!-- Bouton retour -->
     <div class="mt-8">
         <a href="/personnes" class="btn btn-ghost gap-2">

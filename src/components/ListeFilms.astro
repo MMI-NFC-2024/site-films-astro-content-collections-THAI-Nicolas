@@ -8,14 +8,24 @@ interface Props {
 }
 const { films } = Astro.props;
 
+//{index < films.length - 2 ? ', ' : ''}
+            //{index === films.length - 2 ? ' et ' : ''}
 ---
 
 {
     films.map((film, index) => (
         <>
-            <LinkFilms film={film} />
-            {index < films.length - 2 ? ', ' : ''}
-            {index === films.length - 2 ? ' et ' : ''}
+            <ul class="flex gap-20 items-center justify-center">
+                <FilmCard
+                id={film.id}
+                titre={film.data.titre}
+                affiche={film.data.affiche}
+                dateSortie={film.data.dateSortie}
+                genre={film.data.genre}
+            />
+            </ul>
+            
+            
         </>)
     )
     
